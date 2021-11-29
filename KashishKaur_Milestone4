@@ -1,0 +1,180 @@
+MILESTONE 4
+
+Q1. https://leetcode.com/problems/majority-element/
+class Solution {
+    public int majorityElement(int[] nums) {
+        int element=0;
+        int count=0;
+        for(int i=0;i<nums.length;i++){
+            if(count==0){
+                element=nums[i];
+            }
+            if(nums[i]==element){
+                count++;
+            }else{
+                count--;
+            }
+        }
+		return element;
+      
+    }
+}
+
+Q2. https://leetcode.com/problems/non-overlapping-intervals
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        int res=0;
+        Arrays.sort(intervals, (a,b)->a[1]-b[1]); //sorting intervals with respect to end
+        int prevStart = intervals[0][0]; //first intervals's start after sorting
+        int prevEnd = intervals[0][1]; //first intervals's end after sorting
+        for(int i=1;i<intervals.length; i++){
+            int newStart = intervals[i][0];
+            int newEnd = intervals[i][1];
+            if(newStart<=prevStart || newStart<prevEnd) res++;
+            else{
+                prevStart = newStart;
+                prevEnd = newEnd;
+            }
+        }
+        return res;
+    }
+}
+
+Q3. https://leetcode.com/problems/kth-largest-element-in-an-array
+public int findKthLargest(int[] nums, int k) {
+	// create an min heap
+	PriorityQueue<Integer> heap = new PriorityQueue<>();
+	// enter all elements in heap
+	for(int num : nums) {
+		heap.offer(num);
+	}
+	// only keep k elements in heap
+	while(heap.size() > k) {
+		heap.poll();
+	}
+	// return top of heap which is shortest out of k largest elements
+	return heap.peek();
+}
+
+Q4. https://leetcode.com/problems/sort-an-array
+class Solution {
+    public int[] sortArray(int[] nums) {
+        if(nums.length==1) return nums;
+        int left=0, right=nums.length-1;
+        mergeSort(left, right, nums);
+        
+        return nums;
+    }
+    
+    public void mergeSort(int left, int right,int[] nums){
+        if(left<right){
+            int mid=left+(right-left)/2;
+            //left
+            mergeSort(left, mid, nums);
+            
+            //right
+            mergeSort(mid+1, right, nums);
+            
+            
+            //merge
+            merge(left, right, mid, nums);
+        }
+    }
+    
+    public void merge(int left, int right, int mid, int[] nums){
+        int a = mid-left+1;
+        int b = right-mid;
+        int[] first = new int[a];
+        int[] second = new int[b];
+        
+        for (int i=0; i<a; i++){
+            first[i] = nums[left+i];
+        }
+        
+        for (int i=0; i<b; i++){
+            second[i] = nums[mid+i+1];
+        }
+        
+        int i=0, j=0, k=left;
+        while (i<a && j<b){
+            if(first[i]<=second[j]){
+                nums[left] = first[i];
+                i++;
+            }else{
+                nums[left] = second[j];
+                j++;
+            }
+            left++;
+        }
+        
+        while(i<a){
+            nums[left] = first[i];
+            i++;
+            left++;
+        }
+        
+        while(j<b){
+            nums[left] = second[j];
+            j++;
+            left++;
+        }
+        
+        
+        //System.out.println(a);
+        //System.out.println(b);
+    }
+}
+
+Q5. https://leetcode.com/problems/hand-of-straights
+class Solution {
+    public boolean isNStraightHand(int[] hand, int gs) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int n : hand) {
+            map.put(n, map.getOrDefault(n, 0) + 1);
+        }
+        Arrays.sort(hand);
+        for (int i = 0; i < hand.length; i++) {
+            if (map.containsKey(hand[i])) {
+                for (int j = 0; j < gs; j++) {
+                    int n = hand[i] + j;
+                    if (map.containsKey(n)) {
+                        map.put(n, map.get(n) - 1);
+                        if (map.get(n) == 0)
+                            map.remove(n);
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return map.size() == 0;
+    }
+}
+
+Q6.https://leetcode.com/problems/string-without-aaa-or-bbb
+class Solution {
+    public String strWithout3a3b(int a, int b) {
+        int length = a + b;
+        StringBuilder result = new StringBuilder();
+        
+        for(int i=0;i<length;i++){
+            if(result.length() > 1 && result.charAt(result.length() - 1) == result.charAt(result.length() - 2) && result.charAt(result.length() - 1) == 'a'){
+                result.append("b");
+                b--;
+            }
+            else if(result.length() > 1 && result.charAt(result.length() - 1) == result.charAt(result.length() - 2) && result.charAt(result.length() - 1) == 'b'){
+                result.append("a");
+                a--;
+            }
+            else if(a > 0 && a >= b){
+                result.append("a");
+                a--;
+            }
+            else if(b > 0 && b >= a){
+                result.append("b");
+                b--;
+            }
+        }
+        return result.toString();
+    }
+}
